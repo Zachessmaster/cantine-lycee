@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestion Cantine - Intendance</title>
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+  <div class="container">
+    <!-- 1. ÉCRAN DE CONNEXION INTENDANCE -->
+    <div id="loginView" class="card">
+      <h2 class="login-title">Accès Intendance</h2>
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="adminEmail">Email académique</label>
+          <input type="email" id="adminEmail" required placeholder="nom@ac-paris.fr">
+        </div>
+        <div class="form-group">
+          <label for="adminPassword">Mot de passe</label>
+          <input type="password" id="adminPassword" required>
+        </div>
+        <button type="submit" class="btn btn-primary login-submit">Se connecter</button>
+        <p id="loginError" class="login-error"></p>
+      </form>
+    </div>
+
+    <!-- 2. TABLEAU DE BORD INTENDANCE -->
+    <div id="dashboardView">
+      <div class="card">
+        <div class="top-bar">
+          <div>
+            <h2>Pointage et Inscriptions Cantine</h2>
+            <p class="week-info" id="weekInfo"></p>
+          </div>
+          <button class="btn btn-logout" id="logoutBtn">Déconnexion</button>
+        </div>
+
+        <div class="controls">
+          <div>
+            <label for="filterDay">Filtrer par jour</label>
+            <select id="filterDay">
+              <option value="all">Toute la semaine</option>
+              <option value="monday">Lundi</option>
+              <option value="tuesday">Mardi</option>
+              <option value="wednesday">Mercredi</option>
+              <option value="thursday">Jeudi</option>
+              <option value="friday">Vendredi</option>
+            </select>
+          </div>
+          <div>
+            <label for="filterClass">Filtrer par classe</label>
+            <select id="filterClass">
+              <option value="all">Toutes les classes</option>
+            </select>
+          </div>
+          <div class="export-control">
+            <button class="btn btn-excel" id="exportBtn">
+              Export
+            </button>
+          </div>
+        </div>
+
+        <div class="stats-bar">
+          <div>Élèves affichés : <span class="badge" id="countBadge">0</span></div>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Nom</th>
+                <th>Prénom</th>
+                <th>Classe</th>
+                <th class="col-center">Lun</th>
+                <th class="col-center">Mar</th>
+                <th class="col-center">Mer</th>
+                <th class="col-center">Jeu</th>
+                <th class="col-center">Ven</th>
+              </tr>
+            </thead>
+            <tbody id="studentsTableBody">
+              <!-- Rempli en JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Librairies CDN : Supabase Client + SheetJS (Export Excel) -->
+  <!-- Librairies Supabase et SheetJS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="js/admin.js" defer></script>
+</body>
+</html>
