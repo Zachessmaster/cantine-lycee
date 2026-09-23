@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inscription Demi-Pension</title>
+  <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+
+  <main class="card">
+    <header class="header">
+      <h1>Inscription Cantine</h1>
+      <div class="clock-badge" id="liveClock">Chargement de la date...</div>
+      <span class="week-badge" id="weekBadge">Semaine en cours</span>
+    </header>
+
+    <form id="lunchForm">
+      <div class="website-field">
+        <label for="website">Ne pas remplir</label>
+        <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+      </div>
+
+      <div class="form-group">
+        <label for="studentName">Nom de famille</label>
+        <input type="text" id="studentName" placeholder="ex. DUPONT" required>
+      </div>
+
+      <div class="form-group">
+        <label for="studentFirstName">Prénom</label>
+        <input type="text" id="studentFirstName" placeholder="ex. Lucas" required>
+      </div>
+
+      <div class="form-group">
+        <label for="studentClass">Classe</label>
+        <select id="studentClass" required>
+          <option value="" disabled selected>Sélectionner une classe</option>
+          <option value="1STMG1">1 STMG 1</option>
+          <option value="1STMG2">1 STMG 2</option>
+          <option value="1STMG3">1 STMG 3</option>
+          <option value="1STMG4">1 STMG 4</option>
+          <option value="TSTMG1">T STMG 1</option>
+          <option value="TSTMG2">T STMG 2</option>
+          <option value="TSTMG3">T STMG 3</option>
+          <option value="TSTMG4">T STMG 4</option>
+          <option value="CG1A">BTS CG 1A</option>
+          <option value="CG1B">BTS CG 1B</option>
+          <option value="CG1C">BTS CG 1C</option>
+          <option value="CG2A">BTS CG 2A</option>
+          <option value="CG2B">BTS CG 2B</option>
+          <option value="GPME1">GPME 1</option>
+          <option value="GPME2">GPME 2</option>
+          <option value="NDRC1">NDRC 1</option>
+          <option value="NDRC2">NDRC 2</option>
+          <option value="DCG1">DCG 1</option>
+          <option value="DCG2">DCG 2</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Jours de repas souhaités</label>
+        <div class="quick-actions">
+          <button type="button" class="btn-secondary" id="selectAllBtn">Jours disponibles</button>
+          <button type="button" class="btn-secondary" id="clearAllBtn">Effacer tout</button>
+        </div>
+
+        <div class="days-grid">
+          <!-- Lundi (Index 1) -->
+          <label class="day-option" id="container-monday">
+            <span id="label-monday">Lundi</span>
+            <input type="checkbox" name="days" value="monday" class="day-cb" id="cb-monday">
+          </label>
+
+          <!-- Mardi (Index 2) -->
+          <label class="day-option" id="container-tuesday">
+            <span id="label-tuesday">Mardi</span>
+            <input type="checkbox" name="days" value="tuesday" class="day-cb" id="cb-tuesday">
+          </label>
+
+          <!-- Mercredi (Index 3) -->
+          <label class="day-option" id="container-wednesday">
+            <span id="label-wednesday">Mercredi</span>
+            <input type="checkbox" name="days" value="wednesday" class="day-cb" id="cb-wednesday">
+          </label>
+
+          <!-- Jeudi (Index 4) -->
+          <label class="day-option" id="container-thursday">
+            <span id="label-thursday">Jeudi</span>
+            <input type="checkbox" name="days" value="thursday" class="day-cb" id="cb-thursday">
+          </label>
+
+          <!-- Vendredi (Index 5) -->
+          <label class="day-option" id="container-friday">
+            <span id="label-friday">Vendredi</span>
+            <input type="checkbox" name="days" value="friday" class="day-cb" id="cb-friday">
+          </label>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit" id="submitBtn">Valider mon inscription</button>
+      <div id="statusBox" class="status-msg"></div>
+    </form>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/index.js" defer></script>
+</body>
+</html>
