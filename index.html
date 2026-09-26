@@ -1,6 +1,7 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
+  <!-- Je précise l'encodage et l'affichage mobile avant de charger mes styles. -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Inscription Demi-Pension</title>
@@ -8,6 +9,7 @@
 </head>
 <body>
 
+  <!-- Je regroupe le formulaire dans une carte pour garder une lecture simple. -->
   <main class="card">
     <header class="header">
       <h1>Inscription Cantine</h1>
@@ -16,6 +18,7 @@
     </header>
 
     <form id="lunchForm">
+      <!-- Je garde ce champ caché comme piège pour écarter les envois automatiques. -->
       <div class="website-field">
         <label for="website">Ne pas remplir</label>
         <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
@@ -34,6 +37,7 @@
       <div class="form-group">
         <label for="studentClass">Classe</label>
         <select id="studentClass" required>
+          <!-- Je propose uniquement les classes prises en charge par l'intendance. -->
           <option value="" disabled selected>Sélectionner une classe</option>
           <option value="1STMG1">1 STMG 1</option>
           <option value="1STMG2">1 STMG 2</option>
@@ -59,12 +63,14 @@
 
       <div class="form-group">
         <label>Jours de repas souhaités</label>
+        <!-- Je laisse choisir tous les jours disponibles ou effacer la sélection. -->
         <div class="quick-actions">
           <button type="button" class="btn-secondary" id="selectAllBtn">Jours disponibles</button>
           <button type="button" class="btn-secondary" id="clearAllBtn">Effacer tout</button>
         </div>
 
         <div class="days-grid">
+          <!-- Je donne un identifiant à chaque jour pour que le script puisse le verrouiller. -->
           <!-- Lundi (Index 1) -->
           <label class="day-option" id="container-monday">
             <span id="label-monday">Lundi</span>
@@ -100,8 +106,48 @@
       <button type="submit" class="btn-submit" id="submitBtn">Valider mon inscription</button>
       <div id="statusBox" class="status-msg"></div>
     </form>
+
+    <!-- Je réserve cet espace au ticket, que je montre seulement après confirmation de Supabase. -->
+    <section id="reservationTicket" class="reservation-ticket" aria-labelledby="ticketTitle" hidden>
+      <header class="ticket-header">
+        <p class="ticket-status">Inscription enregistrée</p>
+        <h2 id="ticketTitle" tabindex="-1">Ticket de réservation</h2>
+      </header>
+      <dl class="ticket-details">
+        <div>
+          <dt>Nom</dt>
+          <dd id="ticketStudentName"></dd>
+        </div>
+        <div>
+          <dt>Prénom</dt>
+          <dd id="ticketStudentFirstName"></dd>
+        </div>
+        <div>
+          <dt>Classe</dt>
+          <dd id="ticketStudentClass"></dd>
+        </div>
+        <div>
+          <dt>Semaine</dt>
+          <dd id="ticketWeek"></dd>
+        </div>
+        <div>
+          <dt>Repas réservés</dt>
+          <dd id="ticketDays"></dd>
+        </div>
+      </dl>
+      <p id="ticketValidatedAt" class="ticket-timestamp"></p>
+      <p class="ticket-reminder">Garde une capture de ce ticket. Elle pourra aider l'intendance à vérifier ta réservation en cas de problème.</p>
+    </section>
+
+    <!-- Je présente ici l'information sur l'utilisation des données. -->
+    <footer class="privacy-notice">
+      Données collectées uniquement pour l'organisation des repas de la semaine par le service intendance.<br>
+      Purge automatique des données. Droit d'accès et de rectification auprès de l'intendance.
+    </footer>
+
   </main>
 
+  <!-- Je charge Supabase avant mon script, qui s'en sert pour enregistrer les inscriptions. -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="js/index.js" defer></script>
 </body>
