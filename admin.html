@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
@@ -8,11 +8,13 @@
 </head>
 <body>
 
+  <!-- Je limite la largeur du contenu pour rendre le tableau plus facile à lire. -->
   <div class="container">
     <!-- 1. ÉCRAN DE CONNEXION INTENDANCE -->
     <div id="loginView" class="card">
       <h2 class="login-title">Accès Intendance</h2>
       <form id="loginForm">
+        <!-- Je demande les identifiants du compte d'intendance avant d'afficher les inscriptions. -->
         <div class="form-group">
           <label for="adminEmail">Email académique</label>
           <input type="email" id="adminEmail" required placeholder="nom@ac-paris.fr">
@@ -29,6 +31,7 @@
     <!-- 2. TABLEAU DE BORD INTENDANCE -->
     <div id="dashboardView">
       <div class="card">
+        <!-- Je montre la semaine affichée et je garde la déconnexion toujours accessible. -->
         <div class="top-bar">
           <div>
             <h2>Pointage et Inscriptions Cantine</h2>
@@ -37,6 +40,7 @@
           <button class="btn btn-logout" id="logoutBtn">Déconnexion</button>
         </div>
 
+        <!-- Je regroupe les filtres et l'export au-dessus du tableau. -->
         <div class="controls">
           <div>
             <label for="filterDay">Filtrer par jour</label>
@@ -62,10 +66,12 @@
           </div>
         </div>
 
+        <!-- Je donne le nombre de résultats visibles après filtrage. -->
         <div class="stats-bar">
           <div>Élèves affichés : <span class="badge" id="countBadge">0</span></div>
         </div>
 
+        <!-- Je laisse le tableau défiler horizontalement sur les petits écrans. -->
         <div class="table-wrapper">
           <table>
             <thead>
@@ -89,8 +95,7 @@
     </div>
   </div>
 
-  <!-- Librairies CDN : Supabase Client + SheetJS (Export Excel) -->
-  <!-- Librairies Supabase et SheetJS -->
+  <!-- Je charge les outils Supabase et Excel avant le script du tableau de bord. -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="js/admin.js" defer></script>
