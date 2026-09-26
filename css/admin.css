@@ -41,7 +41,7 @@ body {
 }
 
 #loginView { max-width: 400px; margin: 60px auto; }
-.login-title { margin-bottom: 16px; color: var(--primary); letter-spacing: -0.02em; }
+.login-title { margin-bottom: 16px; color: var(--primary); font-size: 1.5rem; letter-spacing: -0.02em; }
 .login-submit { width: 100%; }
 .login-error { color: #b42318; font-size: 0.85rem; margin-top: 10px; display: none; }
 .form-group { margin-bottom: 16px; }
