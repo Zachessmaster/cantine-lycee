@@ -1,21 +1,42 @@
+// Je réutilise le projet Supabase de la page d'inscription.
 const SUPABASE_URL = "https://hxgylzfctfeelzetfnwj.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh4Z3lsemZjdGZlZWx6ZXRmbndqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAxNzM0MDIsImV4cCI6MjEwNTc0OTQwMn0.4frUb93cHbh5qhhtv9i317HrCNj6MfFrENVXTY154IQ";
 
+// Je crée le client qui gère la connexion et la lecture des inscriptions.
 const sbClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 let allRegistrations = [];
 
+// Je calcule le lundi affiché, avec la même bascule du vendredi à 20 h que l'inscription.
 function getCurrentMonday() {
   const date = new Date();
   const day = date.getDay();
-  const daysSinceMonday = (day + 6) % 7;
+
+  // Je prends la semaine suivante vendredi soir et pendant le week-end.
+  if ((day === 5 && date.getHours() >= 20) || day === 6 || day === 0) {
+    date.setDate(date.getDate() + ((8 - day) % 7));
+  }
+
+  const daysSinceMonday = (date.getDay() + 6) % 7;
 
   date.setDate(date.getDate() - daysSinceMonday);
   date.setHours(12, 0, 0, 0);
 
-  return date.toISOString().slice(0, 10);
+  // Je construis une date locale pour ne pas subir de décalage UTC.
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const monday = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${monday}`;
 }
 
 const currentWeekStart = getCurrentMonday();
+// Je recharge le tableau si la semaine change pendant que l'administration reste ouverte.
+setInterval(() => {
+  if (getCurrentMonday() !== currentWeekStart) {
+    window.location.reload();
+  }
+}, 30000);
+
+// Je limite les résultats aux classes actuellement gérées dans cette page.
 const currentClasses = new Set([
   '1STMG1', '1STMG2', '1STMG3', '1STMG4',
   'TSTMG1', 'TSTMG2', 'TSTMG3', 'TSTMG4',
@@ -24,6 +45,7 @@ const currentClasses = new Set([
   'NDRC1', 'NDRC2',
   'DCG1', 'DCG2'
 ]);
+// Je garde les noms des jours pour préparer le fichier exporté.
 const dayNames = {
   monday: 'Lundi',
   tuesday: 'Mardi',
@@ -32,6 +54,7 @@ const dayNames = {
   friday: 'Vendredi'
 };
 
+// Je repère le jour courant pour l'export des élèves qui mangent aujourd'hui.
 function getCurrentDayKey() {
   return {
     1: 'monday',
@@ -44,12 +67,14 @@ function getCurrentDayKey() {
 
 const currentDayKey = getCurrentDayKey();
 
+// Je récupère les éléments de connexion que je vais manipuler dans les événements.
 const loginForm = document.getElementById('loginForm');
 const loginView = document.getElementById('loginView');
 const dashboardView = document.getElementById('dashboardView');
 const loginError = document.getElementById('loginError');
 const submitBtn = loginForm.querySelector('button[type="submit"]');
 
+// Je contrôle les identifiants avec Supabase avant d'afficher le tableau de bord.
 loginForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   loginError.style.display = 'none';
@@ -60,6 +85,7 @@ loginForm.addEventListener('submit', async (event) => {
   const password = document.getElementById('adminPassword').value;
 
   try {
+    // Je demande à Supabase d'ouvrir la session de l'intendance.
     const { error } = await sbClient.auth.signInWithPassword({ email, password });
 
     if (error) {
@@ -75,6 +101,7 @@ loginForm.addEventListener('submit', async (event) => {
   }
 });
 
+// Je ferme la session puis je reviens à l'écran de connexion.
 document.getElementById('logoutBtn').addEventListener('click', async () => {
   await sbClient.auth.signOut();
   dashboardView.style.display = 'none';
@@ -82,22 +109,26 @@ document.getElementById('logoutBtn').addEventListener('click', async () => {
   resetSubmitButton();
 });
 
+// Je centralise l'affichage des erreurs de connexion.
 function showLoginError(message) {
   loginError.textContent = message;
   loginError.style.display = 'block';
 }
 
+// Je remets le bouton dans son état normal après une tentative de connexion.
 function resetSubmitButton() {
   submitBtn.disabled = false;
   submitBtn.textContent = 'Se connecter';
 }
 
+// Je charge les inscriptions de la semaine et je prépare leur affichage.
 async function initDashboard() {
   loginView.style.display = 'none';
   dashboardView.style.display = 'block';
   document.getElementById('weekInfo').textContent = `Semaine débutant le ${currentWeekStart}`;
 
   const { data, error } = await sbClient
+    // Je ne récupère que les colonnes utiles à l'affichage du tableau.
     .from('registrations')
     .select(`
       student_name,
@@ -110,6 +141,7 @@ async function initDashboard() {
       thursday,
       friday
     `)
+    // Je filtre sur la semaine choisie puis je trie pour faciliter la lecture.
     .eq('week_start', currentWeekStart)
     .order('student_class', { ascending: true })
     .order('student_name', { ascending: true });
@@ -119,6 +151,7 @@ async function initDashboard() {
     return;
   }
 
+  // Je garde uniquement les classes connues avant de remplir les filtres et le tableau.
   allRegistrations = (data || []).filter((registration) =>
     currentClasses.has(registration.student_class)
   );
@@ -126,6 +159,7 @@ async function initDashboard() {
   renderTable();
 }
 
+// Je reconstruis la liste des classes selon le jour sélectionné.
 function populateClassFilter() {
   const classSelect = document.getElementById('filterClass');
   const previousClass = classSelect.value;
@@ -155,6 +189,7 @@ function populateClassFilter() {
   classSelect.value = classes.includes(previousClass) ? previousClass : 'all';
 }
 
+// Je combine les filtres du jour et de la classe sans modifier les données originales.
 function getFilteredData() {
   const selectedDay = document.getElementById('filterDay').value;
   const selectedClass = document.getElementById('filterClass').value;
@@ -169,11 +204,13 @@ function getFilteredData() {
   });
 }
 
+// Je récupère les inscrits dont la case du jour courant est cochée.
 function getTodayData() {
   if (!currentDayKey) return [];
   return allRegistrations.filter((registration) => registration[currentDayKey] === true);
 }
 
+// Je crée une cellule et j'ajoute le texte sans interpréter son contenu comme du HTML.
 function addCell(row, value, className = '', strong = false) {
   const cell = document.createElement('td');
   if (className) cell.className = className;
@@ -189,6 +226,7 @@ function addCell(row, value, className = '', strong = false) {
   row.appendChild(cell);
 }
 
+// Je dessine le tableau à partir des résultats filtrés.
 function renderTable() {
   const tbody = document.getElementById('studentsTableBody');
   const filtered = getFilteredData();
@@ -211,22 +249,26 @@ function renderTable() {
   });
 }
 
+// Je restaure la session si l'intendance s'était déjà connectée.
 async function restoreSession() {
   const { data } = await sbClient.auth.getSession();
   if (data.session) await initDashboard();
 }
 
+// Je rafraîchis les options et le tableau quand un filtre change.
 document.getElementById('filterDay').addEventListener('change', () => {
   populateClassFilter();
   renderTable();
 });
 document.getElementById('filterClass').addEventListener('change', renderTable);
 
+// Je prépare un fichier Excel avec les inscrits du jour courant.
 document.getElementById('exportBtn').addEventListener('click', () => {
   const dataToExport = getTodayData();
   const currentDay = currentDayKey || 'aucun-service';
   const dayLabel = currentDayKey ? dayNames[currentDayKey] : 'Jour';
 
+  // Je transforme chaque inscription en ligne avec les colonnes voulues dans Excel.
   const rows = dataToExport.map((registration) => ({
     Nom: registration.student_name,
     Prénom: registration.student_first_name,
@@ -234,6 +276,7 @@ document.getElementById('exportBtn').addEventListener('click', () => {
     [dayLabel]: 'OUI'
   }));
 
+  // Je crée la feuille et le classeur, puis je déclenche le téléchargement.
   const worksheet = XLSX.utils.json_to_sheet(rows);
   const workbook = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(workbook, worksheet, 'Inscrits');
